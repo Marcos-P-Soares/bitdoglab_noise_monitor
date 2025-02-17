@@ -78,9 +78,18 @@ void display_message(const char *message);
 void display_message(const char *message) {
     memset(ssd, 0, ssd1306_buffer_length); // Limpa o display
 
-    char *text_lines[2];  
-    text_lines[0] = strtok((char *)message, "\n");  
-    text_lines[1] = strtok(NULL, "\n"); 
+    char text_copy[128];  // Cópia segura da mensagem (evita modificar o original)
+    strncpy(text_copy, message, sizeof(text_copy) - 1);
+    text_copy[sizeof(text_copy) - 1] = '\0'; // Garante terminação correta da string
+
+    char *text_lines[3]; 
+    uint line_count = 0;
+
+    char *line = strtok(text_copy, "\n");
+    while (line != NULL && line_count < 4) {
+        text_lines[line_count++] = line;
+        line = strtok(NULL, "\n");
+    }
 
     int y = 0;
     for (uint i = 0; i < 2; i++) { 
